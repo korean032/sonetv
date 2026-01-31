@@ -471,7 +471,7 @@ Kvrocks is a persistent Redis-compatible storage based on RocksDB, recommended f
 ```yml
 services:
   moontv-core:
-    image: ghcr.io/szemeng76/lunatv:latest
+    image: korean032/sonetv:latest
     container_name: moontv-core
     restart: on-failure
     ports:
@@ -517,7 +517,7 @@ Redis default configuration may lead to data loss. Persistence must be enabled.
 ```yml
 services:
   moontv-core:
-    image: ghcr.io/szemeng76/lunatv:latest
+    image: korean032/sonetv:latest
     container_name: moontv-core
     restart: on-failure
     ports:
@@ -558,7 +558,7 @@ Suitable for scenarios where self-hosted databases are not available. Fully mana
 ```yml
 services:
   moontv-core:
-    image: ghcr.io/szemeng76/lunatv:latest
+    image: korean032/sonetv:latest
     container_name: moontv-core
     restart: on-failure
     ports:
@@ -659,7 +659,7 @@ Zeabur is a one-stop cloud deployment platform. Using pre-built Docker images al
 
 2. **Add LunaTV Service**
    - Click "Add Service" > "Docker Images"
-   - Enter image name: `ghcr.io/szemeng76/lunatv:latest`
+   - Enter image name: `korean032/sonetv:latest`
    - Configure port: `3000` (HTTP)
 
 3. **Configure Environment Variables**
