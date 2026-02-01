@@ -1142,8 +1142,8 @@ export const UserMenu: React.FC = () => {
         onClick={handleCloseMenu}
       />
 
-      {/* 菜单面板 - 从底部弹出,靠近导航栏 */}
-      <div className='fixed bottom-20 right-4 w-56 bg-white/90 dark:bg-gray-900/80 backdrop-blur-md rounded-lg shadow-xl z-1001 border border-white/20 dark:border-gray-700 overflow-hidden select-none animate-in slide-in-from-bottom-4 fade-in duration-200'>
+      {/* 菜单面板 - 从底部弹出,对齐用户按钮 */}
+      <div className='fixed bottom-20 right-16 w-56 bg-white/90 dark:bg-gray-900/80 backdrop-blur-md rounded-lg shadow-xl z-1001 border border-white/20 dark:border-gray-700 overflow-hidden select-none animate-in slide-in-from-bottom-4 fade-in duration-200'>
         {/* 用户信息区域 */}
         <div className='px-3 py-2.5 border-b border-gray-200 dark:border-gray-700 bg-linear-to-r from-gray-50 to-gray-100/50 dark:from-gray-800 dark:to-gray-800/50'>
           <div className='space-y-1'>
