@@ -38,6 +38,10 @@ const DanmuApiConfig = ({ config, refreshConfig }: DanmuApiConfigProps) => {
     customApiUrl: '',
     customToken: '',
     timeout: 30,
+    // 🎨 弹幕样式配置
+    fontSize: 25,
+    speed: 5,
+    opacity: 1,
   });
 
   // 从 config 加载设置
@@ -49,6 +53,9 @@ const DanmuApiConfig = ({ config, refreshConfig }: DanmuApiConfigProps) => {
         customApiUrl: config.DanmuApiConfig.customApiUrl || '',
         customToken: config.DanmuApiConfig.customToken || '',
         timeout: config.DanmuApiConfig.timeout || 30,
+        fontSize: config.DanmuApiConfig.fontSize || 25,
+        speed: config.DanmuApiConfig.speed || 5,
+        opacity: config.DanmuApiConfig.opacity || 1,
       });
     }
   }, [config]);
@@ -364,6 +371,97 @@ const DanmuApiConfig = ({ config, refreshConfig }: DanmuApiConfigProps) => {
                 <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
                   范围 5-60 秒，建议 30 秒
                 </p>
+              </div>
+
+              {/* 🎨 弹幕样式配置 */}
+              <div className='space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4'>
+                <h4 className='text-sm font-medium text-gray-900 dark:text-gray-100'>
+                  弹幕样式
+                </h4>
+                {/* 字号滑块 */}
+                <div>
+                  <div className='flex items-center justify-between mb-2'>
+                    <label className='text-sm text-gray-700 dark:text-gray-300'>
+                      字号
+                    </label>
+                    <span className='text-sm font-medium text-purple-600 dark:text-purple-400'>
+                      {settings.fontSize}px
+                    </span>
+                  </div>
+                  <input
+                    type='range'
+                    min='12'
+                    max='48'
+                    step='1'
+                    value={settings.fontSize}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        fontSize: parseInt(e.target.value),
+                      }))
+                    }
+                    className='w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-600'
+                  />
+                  <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
+                    范围 12-48px，默认 25px
+                  </p>
+                </div>
+                {/* 速度滑块 */}
+                <div>
+                  <div className='flex items-center justify-between mb-2'>
+                    <label className='text-sm text-gray-700 dark:text-gray-300'>
+                      速度
+                    </label>
+                    <span className='text-sm font-medium text-purple-600 dark:text-purple-400'>
+                      {settings.speed}
+                    </span>
+                  </div>
+                  <input
+                    type='range'
+                    min='1'
+                    max='10'
+                    step='1'
+                    value={settings.speed}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        speed: parseInt(e.target.value),
+                      }))
+                    }
+                    className='w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-600'
+                  />
+                  <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
+                    范围 1-10，默认 5（数字越大速度越快）
+                  </p>
+                </div>
+                {/* 透明度滑块 */}
+                <div>
+                  <div className='flex items-center justify-between mb-2'>
+                    <label className='text-sm text-gray-700 dark:text-gray-300'>
+                      透明度
+                    </label>
+                    <span className='text-sm font-medium text-purple-600 dark:text-purple-400'>
+                      {Math.round(settings.opacity * 100)}%
+                    </span>
+                  </div>
+                  <input
+                    type='range'
+                    min='0'
+                    max='1'
+                    step='0.1'
+                    value={settings.opacity}
+                    onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        opacity: parseFloat(e.target.value),
+                      }))
+                    }
+                    className='w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-purple-600'
+                  />
+                  <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
+                    范围 0-100%，默认 100%
+                  </p>
+                </div>
               </div>
 
               {/* 测试连接 */}
