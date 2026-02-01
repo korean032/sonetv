@@ -321,6 +321,7 @@ interface SiteConfig {
   TMDBApiKey?: string;
   TMDBLanguage?: string;
   EnableTMDBActorSearch?: boolean;
+  EnableHeroTrailer?: boolean;
 }
 
 // Cron 配置类型
@@ -6019,7 +6020,9 @@ const SiteConfigComponent = ({
         // TMDB配置
         TMDBApiKey: config.SiteConfig.TMDBApiKey || '',
         TMDBLanguage: config.SiteConfig.TMDBLanguage || 'zh-CN',
-        EnableTMDBActorSearch: config.SiteConfig.EnableTMDBActorSearch || false,
+        EnableTMDBActorSearch:
+          config?.SiteConfig?.EnableTMDBActorSearch ?? false,
+        EnableHeroTrailer: config?.SiteConfig?.EnableHeroTrailer ?? true,
       });
     }
   }, [config]);
@@ -6805,6 +6808,42 @@ const SiteConfigComponent = ({
                 siteSettings.EnableTMDBActorSearch
                   ? 'translate-x-6'
                   : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* 首页预告片配置 */}
+      <div className='border-t border-gray-200 dark:border-gray-700 pt-6 mt-6'>
+        <div className='flex items-center justify-between'>
+          <div>
+            <span className='text-sm font-medium text-gray-700 dark:text-gray-300'>
+              开启首页预告片
+            </span>
+            <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
+              开启后，首页海报将自动播放预告片（如有）
+            </p>
+          </div>
+          <button
+            type='button'
+            onClick={() =>
+              setSiteSettings((prev) => ({
+                ...prev,
+                EnableHeroTrailer: !prev.EnableHeroTrailer,
+              }))
+            }
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${
+              siteSettings.EnableHeroTrailer
+                ? buttonStyles.toggleOn
+                : buttonStyles.toggleOff
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                siteSettings.EnableHeroTrailer
+                  ? buttonStyles.toggleThumbOn
+                  : buttonStyles.toggleThumbOff
               }`}
             />
           </button>

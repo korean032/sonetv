@@ -214,6 +214,8 @@ async function getInitConfig(
         process.env.NEXT_PUBLIC_DISABLE_YELLOW_FILTER === 'true',
       ShowAdultContent: false, // 默认不显示成人内容，可在管理面板修改
       FluidSearch: process.env.NEXT_PUBLIC_FLUID_SEARCH !== 'false',
+      EnableHeroTrailer:
+        process.env.NEXT_PUBLIC_DISABLE_HERO_TRAILER !== 'true',
       // TMDB配置默认值
       TMDBApiKey: process.env.TMDB_API_KEY || '',
       TMDBLanguage: 'zh-CN',

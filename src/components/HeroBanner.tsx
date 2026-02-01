@@ -12,6 +12,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useRef, useCallback, memo } from 'react';
+import { useSite } from '@/components/SiteProvider';
 import { useAutoplay } from './hooks/useAutoplay';
 import { useSwipeGesture } from './hooks/useSwipeGesture';
 
@@ -44,9 +45,13 @@ function HeroBanner({
   showIndicators = true,
   enableVideo = false,
 }: HeroBannerProps) {
-  // 🎬 检查环境变量是否禁用预告片
-  const isTrailerDisabled =
-    process.env.NEXT_PUBLIC_DISABLE_HERO_TRAILER === 'true';
+  // 🎬 从站点配置获取预告片开关（优先于环境变量）
+  const { enableHeroTrailer } = useSite();
+
+  // 如果配置了 enabledHeroTrailer，则使用配置值；否则回退到 disableYellowFilter 逻辑（这里实际上 enableHeroTrailer 已经由 Layout 处理了）
+  // 注意：enableHeroTrailer 在 SiteProvider 中默认为 true
+  // 这里我们需要反转逻辑：Disable = false -> Enable = true
+  const isTrailerDisabled = enableHeroTrailer === false;
   const effectiveEnableVideo = enableVideo && !isTrailerDisabled;
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -393,17 +398,17 @@ function HeroBanner({
         })}
 
         {/* Netflix经典渐变遮罩：底部黑→中间透明→顶部黑 */}
-        <div className='absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80' />
+        <div className='absolute inset-0 bg-linear-to-t from-black via-black/40 to-black/80' />
 
         {/* 左侧额外渐变（增强文字可读性） */}
-        <div className='absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent' />
+        <div className='absolute inset-0 bg-linear-to-r from-black/60 via-transparent to-transparent' />
       </div>
 
       {/* 内容叠加层 - Netflix风格：左下角 */}
       <div className='absolute bottom-0 left-0 right-0 px-4 sm:px-8 md:px-12 lg:px-16 xl:px-20 pb-12 sm:pb-16 md:pb-20 lg:pb-24'>
         <div className='space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6'>
           {/* 标题 - Netflix风格：超大字体 */}
-          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight break-words'>
+          <h1 className='text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight wrap-break-word'>
             {currentItem.title}
           </h1>
 

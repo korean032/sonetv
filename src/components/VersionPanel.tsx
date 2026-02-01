@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { changelog, ChangelogEntry } from '@/lib/changelog';
-import { CURRENT_VERSION } from '@/lib/version';
+import { CHANGELOG_URL, CURRENT_VERSION, REPO_URL } from '@/lib/version';
 import { compareVersions, UpdateStatus } from '@/lib/version_check';
 
 interface VersionPanelProps {
@@ -72,17 +72,17 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
 
   // 获取远程变更日志
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && CHANGELOG_URL) {
       fetchRemoteChangelog();
     }
   }, [isOpen]);
 
   // 获取远程变更日志
   const fetchRemoteChangelog = async () => {
+    if (!CHANGELOG_URL) return;
+
     try {
-      const response = await fetch(
-        'https://raw.githubusercontent.com/SzeMeng76/LunaTV/refs/heads/main/CHANGELOG',
-      );
+      const response = await fetch(CHANGELOG_URL);
       if (response.ok) {
         const content = await response.text();
         const parsed = parseChangelog(content);
@@ -363,15 +363,17 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
                       </p>
                     </div>
                   </div>
-                  <a
-                    href='https://github.com/SzeMeng76/LunaTV'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
-                  >
-                    <Download className='w-3 h-3 sm:w-4 sm:h-4' />
-                    前往仓库
-                  </a>
+                  {REPO_URL && (
+                    <a
+                      href={REPO_URL}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
+                    >
+                      <Download className='w-3 h-3 sm:w-4 sm:h-4' />
+                      前往仓库
+                    </a>
+                  )}
                 </div>
               </div>
             )}
@@ -393,15 +395,17 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
                       </p>
                     </div>
                   </div>
-                  <a
-                    href='https://github.com/SzeMeng76/LunaTV'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
-                  >
-                    <CheckCircle className='w-3 h-3 sm:w-4 sm:h-4' />
-                    前往仓库
-                  </a>
+                  {REPO_URL && (
+                    <a
+                      href={REPO_URL}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      className='inline-flex items-center justify-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm rounded-lg transition-colors shadow-sm w-full'
+                    >
+                      <CheckCircle className='w-3 h-3 sm:w-4 sm:h-4' />
+                      前往仓库
+                    </a>
+                  )}
                 </div>
               </div>
             )}

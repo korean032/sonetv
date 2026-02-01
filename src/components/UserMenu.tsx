@@ -21,7 +21,7 @@ import {
   X,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
@@ -1133,6 +1133,73 @@ export const UserMenu: React.FC = () => {
     }
   };
 
+  // 计算菜单位置
+  const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // 在打开菜单时计算位置
+  useEffect(() => {
+    if (isOpen && buttonRef.current && mounted) {
+      const buttonRect = buttonRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      const windowWidth = window.innerWidth;
+
+      // 菜单宽度固定为 224px (w-56)
+      const menuWidth = 224;
+      const margin = 12; // 间距
+
+      let style: React.CSSProperties = {
+        position: 'fixed',
+        zIndex: 1001,
+      };
+
+      // 垂直定位 logic:
+      // 如果按钮在屏幕下半部分，菜单显示在按钮上方
+      // 如果按钮在屏幕上半部分，菜单显示在按钮下方
+      if (buttonRect.top > windowHeight / 2) {
+        // 显示在上方
+        style.bottom = windowHeight - buttonRect.top + margin;
+        style.transformOrigin = 'bottom right';
+      } else {
+        // 显示在下方
+        style.top = buttonRect.bottom + margin;
+        style.transformOrigin = 'top right';
+      }
+
+      // 水平定位 logic: 优先右对齐按钮，但要防止溢出屏幕
+      // 尝试让菜单的右边与按钮的右边对齐
+      // 如果这种对齐方式会导致左边溢出屏幕，则尝试左对齐
+
+      // 默认尝试右对齐 (right = windowWidth - buttonRect.right)
+      const rightDistance = windowWidth - buttonRect.right;
+
+      // 检查如果右对齐，左侧是否会溢出
+      // Menu Right edge is at `rightDistance` from window right.
+      // Menu Left edge would be at `windowWidth - rightDistance - menuWidth`
+      const leftEdgeIfRightAligned = windowWidth - rightDistance - menuWidth;
+
+      if (leftEdgeIfRightAligned < 10) {
+        // 如果右对齐会导致溢出左边界（或者太靠左），则强制左对齐按钮
+        style.left = buttonRect.left;
+      } else {
+        // 否则默认右对齐
+        style.right = rightDistance;
+      }
+
+      // 再次检查右对齐是否会导致左侧溢出（针对小屏幕额外保险）
+      if (windowWidth < menuWidth + 20) {
+        // 极小屏幕居中
+        style.left = '50%';
+        style.right = 'auto';
+        style.transform = 'translateX(-50%)';
+        style.width = 'calc(100% - 32px)'; // 留出边距
+        style.maxWidth = '224px';
+      }
+
+      setMenuStyle(style);
+    }
+  }, [isOpen, mounted]);
+
   // 菜单面板内容
   const menuPanel = (
     <>
@@ -1143,7 +1210,10 @@ export const UserMenu: React.FC = () => {
       />
 
       {/* 菜单面板 - 从底部弹出,对齐用户按钮 */}
-      <div className='fixed bottom-20 right-16 w-56 bg-white/90 dark:bg-gray-900/80 backdrop-blur-md rounded-lg shadow-xl z-1001 border border-white/20 dark:border-gray-700 overflow-hidden select-none animate-in slide-in-from-bottom-4 fade-in duration-200'>
+      <div
+        style={menuStyle}
+        className='fixed bg-white/90 dark:bg-gray-900/80 backdrop-blur-md rounded-lg shadow-xl z-1001 border border-white/20 dark:border-gray-700 overflow-hidden select-none animate-in fade-in duration-200 w-56'
+      >
         {/* 用户信息区域 */}
         <div className='px-3 py-2.5 border-b border-gray-200 dark:border-gray-700 bg-linear-to-r from-gray-50 to-gray-100/50 dark:from-gray-800 dark:to-gray-800/50'>
           <div className='space-y-1'>
@@ -2643,6 +2713,7 @@ export const UserMenu: React.FC = () => {
     <>
       <div className='relative'>
         <button
+          ref={buttonRef}
           onClick={handleMenuClick}
           className='relative w-10 h-10 p-2 rounded-full flex items-center justify-center text-gray-600 hover:text-blue-500 dark:text-gray-300 dark:hover:text-blue-400 transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-blue-500/30 dark:hover:shadow-blue-400/30 group'
           aria-label='User Menu'

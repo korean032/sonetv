@@ -21,6 +21,8 @@ export interface AdminConfig {
     TMDBApiKey?: string;
     TMDBLanguage?: string;
     EnableTMDBActorSearch?: boolean;
+    // 首页预告片配置
+    EnableHeroTrailer?: boolean;
     // 自定义去广告代码
     CustomAdFilterCode?: string;
     CustomAdFilterVersion?: number;

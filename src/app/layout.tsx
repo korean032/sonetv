@@ -71,6 +71,7 @@ export default async function RootLayout({
   let fluidSearch = process.env.NEXT_PUBLIC_FLUID_SEARCH !== 'false';
   let customAdFilterVersion = 0;
   let aiRecommendEnabled = false;
+  let enableHeroTrailer = true;
   let customCategories = [] as {
     name: string;
     type: 'movie' | 'tv';
@@ -96,6 +97,7 @@ export default async function RootLayout({
     fluidSearch = config.SiteConfig.FluidSearch;
     customAdFilterVersion = config.SiteConfig?.CustomAdFilterVersion || 0;
     aiRecommendEnabled = config.AIRecommendConfig?.enabled ?? false;
+    enableHeroTrailer = config.SiteConfig?.EnableHeroTrailer ?? true;
   }
 
   // 将运行时配置注入到全局 window 对象，供客户端在运行时读取
@@ -110,9 +112,9 @@ export default async function RootLayout({
     FLUID_SEARCH: fluidSearch,
     CUSTOM_AD_FILTER_VERSION: customAdFilterVersion,
     AI_RECOMMEND_ENABLED: aiRecommendEnabled,
-    // 禁用预告片：Vercel 自动检测，或用户手动设置 DISABLE_HERO_TRAILER=true
-    DISABLE_HERO_TRAILER:
-      process.env.VERCEL === '1' || process.env.DISABLE_HERO_TRAILER === 'true',
+    // 禁用预告片：优先级：Config > Env
+    // 如果 config.EnableHeroTrailer 明确为 false，或者 (config 为 undefined 且 Env 为 true)
+    DISABLE_HERO_TRAILER: !enableHeroTrailer,
   };
 
   return (
@@ -146,7 +148,11 @@ export default async function RootLayout({
             <GlobalCacheProvider>
               <DownloadProvider>
                 <WatchRoomProvider>
-                  <SiteProvider siteName={siteName} announcement={announcement}>
+                  <SiteProvider
+                    siteName={siteName}
+                    announcement={announcement}
+                    enableHeroTrailer={enableHeroTrailer}
+                  >
                     <SessionTracker />
                     {children}
                     <GlobalErrorIndicator />
